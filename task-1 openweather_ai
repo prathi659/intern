@@ -1,0 +1,86 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPZMItIpAoDmjW00gzD8JIs",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/prathi659/intern/blob/main/task-1%20openweather_ai\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "E8s-XsyiVM0T"
+      },
+      "outputs": [],
+      "source": [
+        "\n",
+        "!pip install requests seaborn\n",
+        "\n",
+        "\n",
+        "import requests\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import pandas as pd\n",
+        "API_KEY = 'YOUR_API_KEY'  # 🔁 Replace with your actual API key\n",
+        "BASE_URL = 'https://api.openweathermap.org/data/2.5/weather'\n",
+        "city = input(\"Enter the city name: \")\n",
+        "params = {\n",
+        "    'q': city,\n",
+        "    'appid': API_KEY,\n",
+        "    'units': 'metric'\n",
+        "}\n",
+        "response = requests.get(BASE_URL, params=params)\n",
+        "if response.status_code == 200:\n",
+        "    data = response.json()\n",
+        "    weather_data = {\n",
+        "        'Temperature (°C)': data['main']['temp'],\n",
+        "        'Humidity (%)': data['main']['humidity'],\n",
+        "        'Pressure (hPa)': data['main']['pressure'],\n",
+        "        'Wind Speed (m/s)': data['wind']['speed']\n",
+        "    }\n",
+        "    print(f\"\\n📍 Weather in {city.title()}:\")\n",
+        "    for k, v in weather_data.items():\n",
+        "        print(f\"{k}: {v}\")\n",
+        "    df = pd.DataFrame(weather_data.items(), columns=['Metric', 'Value'])\n",
+        "    plt.figure(figsize=(8,5))\n",
+        "    sns.barplot(x='Value', y='Metric', data=df, palette='Blues_d')\n",
+        "    plt.title(f\"Weather Metrics in {city.title()}\")\n",
+        "    plt.xlabel(\"Value\")\n",
+        "    plt.ylabel(\"Metric\")\n",
+        "    plt.grid(True, axis='x')\n",
+        "    plt.tight_layout()\n",
+        "    plt.show()\n",
+        "    df_heat = pd.DataFrame([weather_data])\n",
+        "    plt.figure(figsize=(6, 3))\n",
+        "    sns.heatmap(df_heat, annot=True, cmap='coolwarm', fmt=\".1f\")\n",
+        "    plt.title(f\"Weather Heatmap for {city.title()}\")\n",
+        "    plt.tight_layout()\n",
+        "    plt.show()\n",
+        "\n",
+        "else:\n",
+        "    print(\"⚠️ Failed to retrieve data. Please check the city name or API key.\")\n"
+      ]
+    }
+  ]
+}
